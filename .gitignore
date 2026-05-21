@@ -1,0 +1,15 @@
+.vs/
+Debug/
+Release/
+ProyectoFinal/Debug/
+ProyectoFinal/Release/
+*.o
+*.d
+*.lss
+*.map
+*.elf
+*.hex
+*.eep
+*.srec
+*.user
+*.bak
