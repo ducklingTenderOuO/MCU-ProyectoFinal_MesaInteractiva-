@@ -1,0 +1,12 @@
+Guarda aqui tus canciones de fondo con el siguiente formato de nombre:
+001.mp3
+002.mp3
+003.mp3
+004.mp3
+005.mp3
+006.mp3
+007.mp3
+008.mp3
+009.mp3
+
+Estas pistas se reproduciran en el modo normal y podras seleccionarlas usando las teclas del 1 al 9.
