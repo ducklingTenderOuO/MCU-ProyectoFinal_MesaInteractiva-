@@ -1,4 +1,3 @@
-Guarda aqui tus canciones de fondo con el siguiente formato de nombre:
 001.mp3
 002.mp3
 003.mp3

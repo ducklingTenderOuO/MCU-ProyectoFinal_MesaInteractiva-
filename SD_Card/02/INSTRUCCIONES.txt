@@ -1,4 +1,3 @@
-Guarda aqui los audios de tus notas musicales con el siguiente formato de nombre:
 001.mp3  (Nota para Sensor 0 - Do)
 002.mp3  (Nota para Sensor 1 - Re)
 003.mp3  (Nota para Sensor 2 - Mi)
