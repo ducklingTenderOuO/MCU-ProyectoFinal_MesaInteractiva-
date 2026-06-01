@@ -8,10 +8,34 @@
 #include "config.h"
 #include "adc.h"
 #include "timers.h"
-#include "buzzer.h"
-#include "mux.h"
 #include "motor.h"
 #include "dfplayer.h"
+#include "keypad.h"
+
+typedef struct {
+    uint8_t any_active;
+    uint8_t first_active;
+    uint16_t value[NUM_SENSORS];
+    uint8_t detected[NUM_SENSORS];
+} LDR_ScanResult;
+
+LDR_ScanResult ldr_scan_all(void) {
+    LDR_ScanResult result;
+    result.any_active = 0;
+    result.first_active = 0xFF;
+
+    for (uint8_t i = 0; i < NUM_SENSORS; i++) {
+        result.value[i] = adc_read(i);
+        result.detected[i] = (result.value[i] > LDR_THRESHOLD);
+
+        if (result.detected[i] && !result.any_active) {
+            result.any_active = 1;
+            result.first_active = i;
+        }
+    }
+
+    return result;
+}
 #include "keypad.h"
 
 #include <avr/io.h>
@@ -70,28 +94,14 @@ void debug_print_sensor(uint8_t sensor_idx, uint16_t val) {
 
 void gpio_init(void)
 {
-    MUX_DDR |= (1 << MUX_S0) | (1 << MUX_S1) | (1 << MUX_S2);
-
     MOTOR_DDR |= (1 << MOTOR_PIN);
-    MOTOR_PORT &= ~(1 << MOTOR_PIN);
-
-    BUZZER_DDR |= (1 << BUZZER_PIN);
-    BUZZER_PORT &= ~(1 << BUZZER_PIN);
+    MOTOR_PORT &= ~(1 << MOTOR_PIN); // Active High
 
     DFP_TX_DDR |= (1 << DFP_TX_PIN);
     DFP_TX_PORT |= (1 << DFP_TX_PIN);
 
     DFP_RX_DDR &= ~(1 << DFP_RX_PIN);
     DFP_RX_PORT |= (1 << DFP_RX_PIN);
-
-    KBD_ROW_DDR |= (1 << KBD_ROW1) | (1 << KBD_ROW2) | (1 << KBD_ROW3);
-    KBD_ROW4_DDR |= (1 << KBD_ROW4);
-    
-    KBD_ROW_PORT |= (1 << KBD_ROW1) | (1 << KBD_ROW2) | (1 << KBD_ROW3);
-    KBD_ROW4_PORT |= (1 << KBD_ROW4);
-
-    KBD_COL_DDR &= ~((1 << KBD_COL1) | (1 << KBD_COL2) | (1 << KBD_COL3));
-    KBD_COL_PORT |= (1 << KBD_COL1) | (1 << KBD_COL2) | (1 << KBD_COL3);
 }
 
 int main(void)
@@ -114,8 +124,6 @@ int main(void)
 
     adc_init();
     timer2_init();
-    buzzer_init();      
-    mux_init();
     dfplayer_init();    
 
     for (uint8_t i = 0; i < 2; i++) {
@@ -132,17 +140,16 @@ int main(void)
     uint32_t last_detect_ms = 0;
     uint8_t active_sensor = 0xFF;
     uint32_t last_debug_ms = 0;
-    uint8_t current_volume = 15;
 
-    dfplayer_play_folder(1, 1);
+    dfplayer_loop_folder(1);
 
     while (1)
     {
-        IR_ScanResult scan = mux_scan_all();
+        LDR_ScanResult scan = ldr_scan_all();
 
         if ((millis() - last_debug_ms) >= 500) {
             last_debug_ms = millis();
-            for (uint8_t i = 0; i < 8; i++) {
+            for (uint8_t i = 0; i < NUM_SENSORS; i++) {
                 debug_print_sensor(i, scan.value[i]);
             }
             debug_uart_string("----\r\n");
@@ -152,10 +159,9 @@ int main(void)
         {
             case STATE_NORMAL:
                 motor_off();
-                buzzer_stop();
 
                 if (note_playing) {
-                    dfplayer_resume();
+                    dfplayer_loop_folder(1); // Reproducir en bucle la carpeta 1 (automático)
                     note_playing = 0;
                 }
 
@@ -169,20 +175,12 @@ int main(void)
                         dfplayer_play_folder(1, track);
                     }
                     else if (key == '*') {
-                        if (current_volume >= 3) current_volume -= 3;
-                        else current_volume = 0;
-                        debug_uart_string("Keypad: Volumen - (");
-                        debug_uart_number(current_volume);
-                        debug_uart_string(")\r\n");
-                        dfplayer_set_volume(current_volume);
+                        debug_uart_string("Keypad: Volumen -\r\n");
+                        dfplayer_volume_down();
                     }
                     else if (key == '#') {
-                        if (current_volume <= 27) current_volume += 3;
-                        else current_volume = 30;
-                        debug_uart_string("Keypad: Volumen + (");
-                        debug_uart_number(current_volume);
-                        debug_uart_string(")\r\n");
-                        dfplayer_set_volume(current_volume);
+                        debug_uart_string("Keypad: Volumen +\r\n");
+                        dfplayer_volume_up();
                     }
                 }
 
@@ -201,10 +199,7 @@ int main(void)
                     }
 
                     if (!note_playing) {
-                        dfplayer_pause();              
-                        _delay_ms(100);                
                         dfplayer_play_sensor_note(active_sensor);
-                        buzzer_play_sensor_note(active_sensor);
                         note_playing = 1;
                     }
 

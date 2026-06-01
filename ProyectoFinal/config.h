@@ -12,53 +12,44 @@
 
 // SISTEMAAAAAAAAAAAAA
 #define F_CPU            16000000UL
-#define NUM_SENSORS      8
-#define IR_THRESHOLD     512
+#define NUM_SENSORS      6
+#define LDR_THRESHOLD    600
 #define DEBOUNCE_EXIT_MS 150
 
-// MULTIPLEXOR CD4051111111
-#define MUX_PORT     PORTC
-#define MUX_DDR      DDRC
-#define MUX_S0       PC1
-#define MUX_S1       PC2
-#define MUX_S2       PC3
-#define MUX_ADC_CH   0
-
 // MOTOR DCCCCCCCCCCCC
-#define MOTOR_PORT   PORTC
-#define MOTOR_DDR    DDRC
-#define MOTOR_PIN    PC4
+#define MOTOR_PORT   PORTB
+#define MOTOR_DDR    DDRB
+#define MOTOR_PIN    PB3 // Arduino Pin 11
 
 // TECLADO MATRICIALLLLLLLL
+// Filas en D2, D3, D4, D5
 #define KBD_ROW_PORT   PORTD
 #define KBD_ROW_DDR    DDRD
-#define KBD_ROW1       PD5
-#define KBD_ROW2       PD6
-#define KBD_ROW3       PD7
+#define KBD_ROW1       PD2
+#define KBD_ROW2       PD3
+#define KBD_ROW3       PD4
+#define KBD_ROW4       PD5
 
-#define KBD_ROW4_PORT  PORTB
-#define KBD_ROW4_DDR   DDRB
-#define KBD_ROW4       PB0
-
+// Columnas en D6, D7, D8, D9
 #define KBD_COL_PORT   PORTD
 #define KBD_COL_DDR    DDRD
 #define KBD_COL_PIN    PIND
-#define KBD_COL1       PD2
-#define KBD_COL2       PD3
-#define KBD_COL3       PD4
+#define KBD_COL1       PD6
+#define KBD_COL2       PD7
 
-// BUZZER PWMMMMMMMMMM
-#define BUZZER_DDR   DDRB
-#define BUZZER_PORT  PORTB
-#define BUZZER_PIN   PB1
+#define KBD_COL_B_PORT PORTB
+#define KBD_COL_B_DDR  DDRB
+#define KBD_COL_B_PIN  PINB
+#define KBD_COL3       PB0 // Pin 8
+#define KBD_COL4       PB1 // Pin 9
 
 // DFPLAYER MINIIIIIIIIIII
 #define DFP_TX_DDR   DDRB
 #define DFP_TX_PORT  PORTB
-#define DFP_TX_PIN   PB2
+#define DFP_TX_PIN   PB4 // Pin 12
 
 #define DFP_RX_DDR   DDRB
 #define DFP_RX_PORT  PORTB
-#define DFP_RX_PIN   PB3
+#define DFP_RX_PIN   PB5 // Pin 13
 
 #endif /* CONFIG_H */

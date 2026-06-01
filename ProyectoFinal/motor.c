@@ -11,10 +11,10 @@
 
 void motor_on(void)
 {
-    MOTOR_PORT |= (1 << MOTOR_PIN);
+    MOTOR_PORT |= (1 << MOTOR_PIN); // Active High
 }
 
 void motor_off(void)
 {
-    MOTOR_PORT &= ~(1 << MOTOR_PIN);
+    MOTOR_PORT &= ~(1 << MOTOR_PIN); // Active High
 }

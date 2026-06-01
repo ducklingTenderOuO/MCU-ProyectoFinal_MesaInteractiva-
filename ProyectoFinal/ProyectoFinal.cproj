@@ -123,16 +123,10 @@
     <None Include="adc.o">
       <SubType>compile</SubType>
     </None>
-    <None Include="buzzer.o">
-      <SubType>compile</SubType>
-    </None>
     <None Include="main.o">
       <SubType>compile</SubType>
     </None>
     <None Include="motor.o">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="mux.o">
       <SubType>compile</SubType>
     </None>
     <None Include="timers.o">
@@ -144,12 +138,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="adc.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="buzzer.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="buzzer.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="config.h">
@@ -168,12 +156,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="motor.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="mux.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="mux.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="timers.c">

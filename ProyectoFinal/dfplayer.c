@@ -132,14 +132,31 @@ void dfplayer_set_volume(uint8_t volume)
     dfplayer_send_command(0x06, (uint16_t)volume);
 }
 
+void dfplayer_volume_up(void)
+{
+    dfplayer_send_command(0x04, 0x0000);
+}
+
+void dfplayer_volume_down(void)
+{
+    dfplayer_send_command(0x05, 0x0000);
+}
+
 void dfplayer_reset(void)
 {
     dfplayer_send_command(0x0C, 0x0000);
 }
 
+void dfplayer_loop_folder(uint8_t folder)
+{
+    // Comando 0x17: Loop todo el contenido de una carpeta
+    dfplayer_send_command(0x17, (uint16_t)folder);
+}
+
 void dfplayer_play_sensor_note(uint8_t sensor_index)
 {
     if (sensor_index < 8) {
+        // Volvemos a la carpeta 02 porque el clon no soporta ADVERT
         dfplayer_play_folder(2, sensor_index + 1);
     }
 }
